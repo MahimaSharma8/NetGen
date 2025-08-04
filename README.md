@@ -2,7 +2,7 @@
 
 An autonomous, low-footprint Agentic AI system designed to predict network traffic patterns in real-time and dynamically balance loads across edge nodes and RAN clusters.
 
-NOTE: the dataset used at the moment for this implementation is Urban56s, There is a sample data file included in the repository.
+NOTE: the dataset used at the moment for this implementation is Urban5Gs, There is a sample data file included in the repository.
 ```
 .
 ├── docker-compose.yml       # Services: Grafana, Prometheus, PushGateway, OTel
