@@ -1,42 +1,85 @@
-# NetGen
+## Service Breakdown
 
-An autonomous, low-footprint Agentic AI system designed to predict network traffic patterns in real-time and dynamically balance loads across edge nodes and RAN clusters.
+| Service           | Port(s)    | Purpose |
+|-------------------|-----------|---------|
+| **Zookeeper**     | 2181      | Required by Kafka for broker coordination |
+| **Kafka**         | 9092      | Event streaming backbone (topics for metrics, alerts, policies) |
+| **NiFi**          | 8080      | GUI-based dataflow creation & management |
+| **Flink JobManager** | 8081   | Flink UI for managing streaming jobs |
+| **Flink TaskManager** | —     | Executes Flink jobs (worker) |
+| **PostgreSQL**    | 5432      | Stores processed metrics, alerts, forecasts |
+| **Prometheus**    | 9090      | Time-series metrics storage for system monitoring |
+| **Grafana**       | 3000      | Visualization dashboards |
+| **OpenTelemetry Collector** | 8889 | Collects & exports metrics to Prometheus |
+| **Tower Simulator** | —       | Pushes mock tower metrics to Kafka |
 
-NOTE: the dataset used at the moment for this implementation is Urban5Gs, There is a sample data file included in the repository.
-```
-.
-├── docker-compose.yml       # Services: Grafana, Prometheus, PushGateway, OTel
-├── prometheus.yml           # Scrapes OTel collector and PushGateway
-├── otel-config.yml          # Forwards metrics from Python to Prometheus
-├── stream.py                # Python script simulating network metrics
-```
+---
 
-##  Setup Instructions
+## Starting the Stack
 
-### 1. Clone and Run
+1. **Edit `docker-compose.yml`**
+   - Replace `${VM_PUBLIC_IP}` with your server’s public IP for Kafka.
+   - Ensure firewall/security group allows all listed ports.
 
-```bash
-docker-compose up --build
-```
+2. **Launch All Services**
+   ```bash
+   docker-compose up -d
 
-### 2. Start Python Exporter
+3. **Check Service Health**
 
-In another terminal:
+    docker ps
+    docker-compose logs -f kafka
+    docker-compose logs -f nifi
 
-```bash
-python3 stream.py
-```
 
-## Ports
+4.	**Access UIs**
+	•	NiFi → http://<VM_PUBLIC_IP>:8080/nifi
+	•	Flink UI → http://<VM_PUBLIC_IP>:8081
+	•	Grafana → http://<VM_PUBLIC_IP>:3000
+	•	Prometheus → http://<VM_PUBLIC_IP>:9090
 
-| Service       | Port   |
-|---------------|--------|
-| Prometheus    | `9090` |
-| Grafana       | `3000` |
-| PushGateway   | `9091` |
+⸻
 
-## Cleanup
+5. **Managing the Stack**
 
-```bash
-docker-compose down -v
-```
+    List topics:
+
+    docker exec -it kafka kafka-topics.sh --bootstrap-server kafka:9092 --list
+
+    Create a topic:
+
+    docker exec -it kafka kafka-topics.sh --bootstrap-server kafka:9092 --create --topic cell-tower-metrics --partitions 3 --replication-factor 1
+
+    Delete a topic:
+
+    docker exec -it kafka kafka-topics.sh --bootstrap-server kafka:9092 --delete --topic cell-tower-metrics
+
+    PostgreSQL Access
+
+    Enter Postgres shell:
+
+    docker exec -it postgres psql -U admin -d network_data
+
+    View tables:
+    \dt
+
+⸻
+
+6. **Monitoring & Logs**
+
+Prometheus
+	•	Metrics endpoint: http://<VM_PUBLIC_IP>:9090
+	•	Query examples: up, kafka_server_brokertopicmetrics_messages_in_total
+
+Grafana
+	•	Default login: admin / admin
+	•	Add Prometheus datasource (http://prometheus:9090)
+	•	Import dashboards for Kafka, Flink, Postgres
+
+Container Logs
+
+docker-compose logs -f kafka
+docker-compose logs -f flink-jobmanager
+
+
+⸻
