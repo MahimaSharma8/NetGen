@@ -17,22 +17,18 @@
 
 ## Starting the Stack
 
-1. **Edit `docker-compose.yml`**
-   - Replace `${VM_PUBLIC_IP}` with your server’s public IP for Kafka.
-   - Ensure firewall/security group allows all listed ports.
-
-2. **Launch All Services**
+1. **Launch All Services**
    ```bash
    docker-compose up -d
 
-3. **Check Service Health**
+2. **Check Service Health**
 
     docker ps
     docker-compose logs -f kafka
     docker-compose logs -f nifi
 
 
-4.	**Access UIs**
+3.	**Access UIs**
 	•	NiFi → http://<VM_PUBLIC_IP>:8080/nifi
 	•	Flink UI → http://<VM_PUBLIC_IP>:8081
 	•	Grafana → http://<VM_PUBLIC_IP>:3000
@@ -40,23 +36,13 @@
 
 ⸻
 
-5. **Managing the Stack**
+4. **Managing the Stack**
 
     List topics:
 
     docker exec -it kafka kafka-topics.sh --bootstrap-server kafka:9092 --list
-
-    Create a topic:
-
-    docker exec -it kafka kafka-topics.sh --bootstrap-server kafka:9092 --create --topic cell-tower-metrics --partitions 3 --replication-factor 1
-
-    Delete a topic:
-
-    docker exec -it kafka kafka-topics.sh --bootstrap-server kafka:9092 --delete --topic cell-tower-metrics
-
+   
     PostgreSQL Access
-
-    Enter Postgres shell:
 
     docker exec -it postgres psql -U admin -d network_data
 
@@ -65,7 +51,7 @@
 
 ⸻
 
-6. **Monitoring & Logs**
+5. **Monitoring & Logs**
 
 Prometheus
 	•	Metrics endpoint: http://<VM_PUBLIC_IP>:9090
