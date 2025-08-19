@@ -22,33 +22,24 @@
    docker-compose up -d
 
 2. **Check Service Health**
-
+	```bash
     docker ps
     docker-compose logs -f kafka
     docker-compose logs -f nifi
 
-
-3.	**Access UIs**
-	•	NiFi → http://<VM_PUBLIC_IP>:8080/nifi
-	•	Flink UI → http://<VM_PUBLIC_IP>:8081
-	•	Grafana → http://<VM_PUBLIC_IP>:3000
-	•	Prometheus → http://<VM_PUBLIC_IP>:9090
 
 ⸻
 
 4. **Managing the Stack**
 
     List topics:
-
+	```bash
     docker exec -it kafka kafka-topics.sh --bootstrap-server kafka:9092 --list
-   
+
+⸻
     PostgreSQL Access
-
+	
     docker exec -it postgres psql -U admin -d network_data
-
-    View tables:
-    \dt
-
 ⸻
 
 5. **Monitoring & Logs**
