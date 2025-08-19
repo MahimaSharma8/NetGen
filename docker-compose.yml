@@ -54,8 +54,6 @@ services:
     container_name: postgres
     restart: always
     environment:
-      POSTGRES_USER: amethyst
-      POSTGRES_PASSWORD: lifegoeson
       POSTGRES_DB: network_data
     ports:
       - "5432:5432"
@@ -71,8 +69,6 @@ services:
     environment:
       - NIFI_WEB_HTTPS_HOST=0.0.0.0
       - NIFI_WEB_HTTPS_PORT=8443
-      - SINGLE_USER_CREDENTIALS_USERNAME=amethyst
-      - SINGLE_USER_CREDENTIALS_PASSWORD=hakunamatata12
     depends_on:
       - kafka
       - postgres
